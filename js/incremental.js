@@ -1,52 +1,75 @@
-var Timer = window.setInterval(function(){tick()},1000);
-var BuildingName = "Lemonade Stand";
-var BuildingCost = 10;
-var BuildingPerSec = 1;
-var BuildingQty = 0;
+// the timer to run code every second
+var Timer = window.setInterval(function(){Tick()},1000);
+// the array of buildings
+var buildings = [];
 
-window.onload = function()
-{
-	window.game = new GameSave();
-}
-
-window.building1 = new Building();
-building1.name = "Lemonade Stand";
-building1.cost = 10;
-building1.persec = 1;
-building1.qty = 0;
-
+// the object constructor for game saves
 function GameSave()
 {
 	this.money = 0;
+	this.buildings = [];
+	for (var i = 0; i < buildings.length; i++)
+	{
+		this.buildings[i] = 0;
+	}
 }
 
-function GatherMoney()
-{
-	game.money ++;
-	document.getElementById("money").innerHTML = game.money;
-}
-
+// the object constructor for buildings
 function Building() 
 {
 	this.name = "Building Name";
 	this.cost = 10;
 	this.persec = 1;
-	this.qty = 0;
 }
 
-function tick()
+// the function to initialize all the buildings
+function InitBuildings()
 {
-	game.money += 1 + (building1.qty * building1.persec);
+	LoadBuilding("Lemonade Stand",10,1);
+}
+
+// the function to load a building into the array
+function LoadBuilding(name, cost, persec)
+{
+	var cur = buildings.length;
+	
+	buildings[cur] = new Building();
+	buildings[cur].name = name;
+	buildings[cur].cost = cost;
+	buildings[cur].persec = persec;
+}
+
+// the function called when the money button is clicked
+function GatherMoney()
+{
+	game.money ++; //increment
+	document.getElementById("money").innerHTML = game.money; //update display
+}
+
+function Tick()
+{
+	// increment the money by 1 plus the buildings' income
+	for (var i = 0; i < buildings.length; i++)
+	{
+		game.money += 1 + (game.buildings[i] * buildings[i].persec);	
+	}
 	document.getElementById("money").innerHTML = game.money;
 }
 
-function BuyLemonadeStand()
+//the function to build a building
+function Build(id)
 {
-	if (game.money >= building1.cost)
+	if (game.money >= buildings[id].cost) 	// is there enough money?
 	{
-		game.money -= building1.cost;
-		building1.qty++;
-		document.getElementById("money").innerHTML = game.money;
-		document.getElementById("buildingQty").innerHTML = building1.qty;
+		game.money -= buildings[id].cost;	//decrease the money by the cost
+		game.buildings[id]++;				//increase the quantity of that building
+		document.getElementById("money").innerHTML = game.money;				//update the money display
+		document.getElementById("buildingQty").innerHTML = game.buildings[id];	//update the building display
 	}
+}
+
+window.onload = function()
+{
+	InitBuildings();
+	window.game = new GameSave();
 }
